@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'username','name','avatar', 'email', 'password',
     ];
 
     /**
@@ -28,6 +28,10 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function setPasswordAttribute($value){
+        return $this->attributes['password'] = bcrypt($value);
+    }
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -38,5 +42,27 @@ class User extends Authenticatable
     ];
     public function posts(){
         return $this->hasMany('App\Post');
+    }
+    public function permissions(){
+        return $this->belongsToMany(Permission::class);
+    }
+    public function roles(){
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function userHasRole($role_name){
+
+        foreach ($this->roles as $role) {
+            if($role_name === $role->name)
+                return true;
+        }
+        return false;
+
+    }
+    public function getAvatarAttribute($value) {
+        if (strpos($value, 'https://') !== FALSE || strpos($value, 'http://') !== FALSE) {
+            return $value;
+        }
+        return asset('storage/' . $value);
     }
 }
