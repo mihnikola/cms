@@ -14,6 +14,6 @@ Route::middleware('role:Admin','auth')->group(function(){
     Route::put('/users/{user}/detach','UserController@detach')->name('user.role.detach');
 });
 
-Route::middleware(['can:view,user'])->group(function(){
+ Route::middleware(['can:view,user'])->group(function(){
     Route::get('/users/{user}/profile','UserController@show')->name('user.profile.show');
-});
+ });
